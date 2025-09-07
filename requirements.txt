@@ -1,0 +1,44 @@
+# Core ML/DL Libraries
+torch
+transformers
+sentence-transformers
+sentencepiece
+sacremoses
+hf_xet
+faiss-cpu
+scikit-learn
+numpy
+spacy
+
+# Data $ Analysis
+matplotlib
+pandas
+seaborn
+sacrebleu
+joblib
+umap-learn
+
+# Dataset Loading
+datasets
+mtdata
+fsspec
+huggingface-hub
+
+# For installing knn-box from the libs folder
+-e libs/knn-box
+
+# Performance
+fastapi
+uvicorn[standard]
+locust
+psutil
+# gunicorn # For Linux system
+
+sympy  # Symbolic mathematics
+scipy  # Scientific computing
+networkx
+
+# python -m spacy download de_core_news_lg
+# python -m spacy download en_core_web_trf
+# python -m pip install puccinialin
+# pip install scikit-learn==1.7.1
