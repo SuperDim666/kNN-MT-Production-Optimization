@@ -28,4 +28,3 @@ python -m spacy download en_core_web_trf
 ### reimagined-meme: 0.15, 0.40
 ### animated-carnival: 0.20, 0.45
 ### Local: 0.25, 0.50
-

@@ -1,0 +1,26 @@
+python $BASE --lambda_cox 2.0 --tag "S5C2_Cox_medium" --save_dir "./runs/gnn_S5/S5C2_Cox_medium"
+
+python $BASE --lambda_cox 10.0 --tag "S5C3_Cox_strong" --save_dir "./runs/gnn_S5/S5C3_Cox_strong"
+
+python $BASE --lambda_cox 2.0 --cox_event_threshold 1.5 --tag "S5C4_Cox_strict_event" --save_dir "./runs/gnn_S5/S5C4_Cox_strict_event"
+
+python $BASE --tag "S5D1_GAT_no_SN" --save_dir "./runs/gnn_S5/S5D1_GAT_no_SN"
+
+python $BASE --use_spectral_norm --tag "S5D2_GAT_with_SN" --save_dir "./runs/gnn_S5/S5D2_GAT_with_SN"
+
+python $BASE --use_spectral_norm --gnn_layer_type rgcn --gnn_num_relations 5 --tag "S5D3_RGCN_with_SN" --save_dir "./runs/gnn_S5/S5D3_RGCN_with_SN"
+
+python $BASE --lambda_cbf 5.0 --phi_crit 1.5 --cbf_alpha 0.3 --lambda_adt 0.2 --tag "S5E1_CBF_ADT" --save_dir "./runs/gnn_S5/S5E1_CBF_ADT"
+
+python $BASE --lambda_cbf 5.0 --phi_crit 1.5 --cbf_alpha 0.3 --lambda_cox 2.0 --tag "S5E2_CBF_Cox" --save_dir "./runs/gnn_S5/S5E2_CBF_Cox"
+
+python $BASE --lambda_cbf 5.0 --phi_crit 1.5 --cbf_alpha 0.3 --lambda_adt 0.2 --lambda_cox 2.0 --tag "S5E3_Full_Model" --save_dir "./runs/gnn_S5/S5E3_Full_Model"
+
+python $BASE --lambda_cbf 5.0 --phi_crit 1.5 --cbf_alpha 0.3 --lambda_adt 0.2 --lambda_cox 2.0 --use_spectral_norm --tag "S5E4_Full_Model_SN" --save_dir "./runs/gnn_S5/S5E4_Full_Model_SN"
+
+python $BASE --lambda_adt 1.0 --tag "S5B3_ADT_strong" --save_dir "./runs/gnn_S5/S5B3_ADT_strong"
+
+python $BASE --lambda_adt 0.2 --tag "S5B2_ADT_medium" --save_dir "./runs/gnn_S5/S5B2_ADT_medium"
+
+python $BASE --lambda_adt 0.05 --tag "S5B1_ADT_weak" --save_dir "./runs/gnn_S5/S5B1_ADT_weak"
+
