@@ -116,7 +116,6 @@ EXPERIMENT_PARAMS = {
         {'beam_size': 2, 'length_penalty': 1.0},
         {'beam_size': 3, 'length_penalty': 1.0},
         {'beam_size': 4, 'length_penalty': 1.0},
-        {'beam_size': 5, 'length_penalty': 1.0},
     ],
 
     # Coherence Horizon Detector parameters for scientific analysis
@@ -130,22 +129,4 @@ EXPERIMENT_PARAMS = {
 # --- General Settings ---
 # Seed for random number generators to ensure reproducibility.
 RANDOM_SEED = 42
-ENV_CONSTRAINT_SCALE = 0.25  # Scale factor for the production constraint simulator
-
-# Generate unique hash for critical parameters
-_config_dict = OrderedDict([
-    ("ACTION_SPACE", sorted(
-        [(a.k, a.index_type, a.lambda_weight) for a in ACTION_SPACE],
-        key=lambda x: (x[0], x[1], x[2])
-    )),
-    ("DATA_LOADER_PARAMS", dict(sorted(DATA_LOADER_PARAMS.items()))),
-    ("KNN_SYSTEM_PARAMS", dict(sorted(KNN_SYSTEM_PARAMS.items()))),
-    ("SIMULATOR_PARAMS", dict(sorted(SIMULATOR_PARAMS.items()))),
-    ("POLICY_PARAMS", dict(sorted(POLICY_PARAMS.items()))),
-    ("RANDOM_SEED", RANDOM_SEED)
-])
-CONFIG_HASH = hashlib.sha256(
-    json.dumps(_config_dict, sort_keys=False, indent=None).encode()
-).hexdigest()
-# Clean up namespace
-del _config_dict
+ENV_CONSTRAINT_SCALES = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]  # Scale factor for the production constraint simulator
