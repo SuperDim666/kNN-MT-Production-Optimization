@@ -110,34 +110,58 @@ def generate_training_data_only(strategies_to_test: List[Tuple[DecodingStrategy,
 if __name__ == "__main__":
     # --- Configuration ---
     # Number of source sentences to process for EACH strategy.
-    NUM_SAMPLES_PER_STRATEGY = 100
+    NUM_SAMPLES_PER_STRATEGY = 10
 
-    # Define all strategies to include in the training data.
-    # This ensures the dynamics model learns from a diverse set of behaviors.
-    STRATEGIES_FOR_TRAINING = [
-        (DecodingStrategy.BEAM_SEARCH, {'beam_size': 1, 'length_penalty': 1.0}),  # Greedy search
-        (DecodingStrategy.BEAM_SEARCH, {'beam_size': 2, 'length_penalty': 1.0}),
-        (DecodingStrategy.BEAM_SEARCH, {'beam_size': 3, 'length_penalty': 1.0}),
-        (DecodingStrategy.BEAM_SEARCH, {'beam_size': 4, 'length_penalty': 1.0}),
-        (DecodingStrategy.BEAM_SEARCH, {'beam_size': 5, 'length_penalty': 1.0}),
-    ]
+    # Generate unique hash for critical parameters
 
-    # Define the output file path using the config module
-    OUTPUT_DIR = config.PATHS["preprocessed_data"] / config.CONFIG_HASH
-    OUTPUT_FILENAME = OUTPUT_DIR / "strategy_comparison_stepwise_{config.ENV_CONSTRAINT_SCALE:.2f}.csv"
+    for env_constraint_scale in config.ENV_CONSTRAINT_SCALES:
 
-    # Copy current config.py to the output directory
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    SRC_CONFIG_PATH = Path(__file__).resolve().parent.parent / 'src' / 'config.py'
-    DEST_CONFIG_PATH = OUTPUT_DIR / 'config.py'
-    if DEST_CONFIG_PATH.exists():
-        os.remove(str(DEST_CONFIG_PATH))
-    shutil.copy(str(SRC_CONFIG_PATH), str(DEST_CONFIG_PATH))
-    print(f"[Successful] Copied config file to: {DEST_CONFIG_PATH}")
+        config.ENV_CONSTRAINT_SCALE = env_constraint_scale
 
-    # --- Execution ---
-    generate_training_data_only(
-        strategies_to_test=STRATEGIES_FOR_TRAINING,
-        num_samples=NUM_SAMPLES_PER_STRATEGY,
-        output_filename=str(OUTPUT_FILENAME)
-    )
+        # Define all strategies to include in the training data.
+        # This ensures the dynamics model learns from a diverse set of behaviors.
+        STRATEGIES_FOR_TRAINING = [
+            (DecodingStrategy.BEAM_SEARCH, {'beam_size': 1, 'length_penalty': 1.0}),  # Greedy search
+            (DecodingStrategy.BEAM_SEARCH, {'beam_size': 2, 'length_penalty': 1.0}),
+            (DecodingStrategy.BEAM_SEARCH, {'beam_size': 3, 'length_penalty': 1.0}),
+            (DecodingStrategy.BEAM_SEARCH, {'beam_size': 4, 'length_penalty': 1.0})
+        ]
+
+        # Generate unique hash for critical parameters
+        _config_dict = OrderedDict([
+            ("ACTION_SPACE", sorted(
+                [(a.k, a.index_type, a.lambda_weight) for a in ACTION_SPACE],
+                key=lambda x: (x[0], x[1], x[2])
+            )),
+            ("DATA_LOADER_PARAMS", dict(sorted(config.DATA_LOADER_PARAMS.items()))),
+            ("KNN_SYSTEM_PARAMS", dict(sorted(config.KNN_SYSTEM_PARAMS.items()))),
+            ("SIMULATOR_PARAMS", dict(sorted(config.SIMULATOR_PARAMS.items()))),
+            ("POLICY_PARAMS", dict(sorted(config.POLICY_PARAMS.items()))),
+            ("RANDOM_SEED", config.RANDOM_SEED), ("ENV_CONSTRAINT_SCALE", config.ENV_CONSTRAINT_SCALE)
+        ])
+        config.CONFIG_HASH = hashlib.sha256(
+            json.dumps(_config_dict, sort_keys=False, indent=None).encode()
+        ).hexdigest()
+        # Clean up namespace
+        del _config_dict
+
+        # Define the output file path using the config module
+        OUTPUT_DIR = config.PATHS["preprocessed_data"] / config.CONFIG_HASH
+        OUTPUT_FILENAME = OUTPUT_DIR / "strategy_comparison_stepwise_{config.ENV_CONSTRAINT_SCALE:.2f}.csv"
+
+        # Copy current config.py to the output directory
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        SRC_CONFIG_PATH = Path(__file__).resolve().parent.parent / 'src' / 'config.py'
+        DEST_CONFIG_PATH = OUTPUT_DIR / 'config.py'
+        if DEST_CONFIG_PATH.exists():
+            os.remove(str(DEST_CONFIG_PATH))
+        shutil.copy(str(SRC_CONFIG_PATH), str(DEST_CONFIG_PATH))
+        print(f"[Successful] Copied config file to: {DEST_CONFIG_PATH}")
+
+        # --- Execution ---
+        generate_training_data_only(
+            strategies_to_test=STRATEGIES_FOR_TRAINING,
+            num_samples=NUM_SAMPLES_PER_STRATEGY,
+            output_filename=str(OUTPUT_FILENAME)
+        )
+
